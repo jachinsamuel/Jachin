@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nexus Logistics</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #f2f6ff;
+      overflow-x: hidden;
+    }
+
+    .hero {
+      background: url(hero.png) center/cover no-repeat;
+      height: 90vh;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 53, 128, 0.63);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 700;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    .track-box {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .timeline {
+      list-style: none;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 10px;
+      top: 0;
+      width: 3px;
+      height: 100%;
+      background: #0d6efd;
+    }
+
+    .timeline li {
+      margin-bottom: 20px;
+      position: relative;
+      padding-left: 25px;
+    }
+
+    .timeline li::before {
+      content: "";
+      position: absolute;
+      left: 1px;
+      top: 5px;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border: 3px solid #0d6efd;
+      border-radius: 50%;
+    }
+
+    .timeline li.completed::before {
+      background: #0d6efd;
+    }
+
+    .timeline li.completed {
+      color: #0d6efd;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm py-3">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <img src="nexus.png" height="45" class="me-2">
+        <strong>Nexus Logistics</strong>
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#track">Track</a></li>
+          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+        </ul>
+
+        <div class="ms-3 d-flex gap-2">
+          <a href="loginmicro.html" class="btn btn-light text-primary fw-bold px-3">Login</a>
+          <a href="signupmicro.html" class="btn btn-outline-light fw-bold px-3">Signup</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero" id="home">
+    <div class="hero-overlay"></div>
+    <div class="hero-content text-white">
+      <h1>Transportation, Cargo & Logistics Tracking</h1>
+      <p>Smart, modern & professional logistics tracking with real-time route optimization and delivery insights.</p>
+      <a href="#track" class="btn btn-primary btn-lg fw-bold mt-3">Track Shipment</a>
+    </div>
+  </section>
+
+  <section class="container py-5" id="track">
+    <div class="track-box p-4 mx-auto" style="max-width: 650px;">
+      <h3 class="text-primary fw-bold mb-3">Track Your Shipment</h3>
+      <p>Enter your tracking ID to get complete shipment details.</p>
+
+      <div class="input-group mb-3">
+        <input id="trackingId" type="text" class="form-control form-control-lg" placeholder="e.g. ANY12345678">
+        <button class="btn btn-primary btn-lg" onclick="trackShipment()">Track</button>
+      </div>
+
+      <p id="errorMsg" class="text-danger"></p>
+    </div>
+  </section>
+
+  <div class="container py-4 d-none" id="trackingDetails">
+    <div class="p-4 bg-white shadow-sm rounded">
+      <h3 class="fw-bold text-primary">Shipment Details</h3>
+
+      <div class="row mt-3">
+        <div class="col-md-6"><strong>Tracking ID:</strong> <span id="trackIdDisplay"></span></div>
+        <div class="col-md-6"><strong>Status:</strong> <span class="badge bg-primary" id="statusBadge"></span></div>
+        <div class="col-md-6"><strong>Service Type:</strong> <span id="serviceTypeDisplay"></span></div>
+        <div class="col-md-6"><strong>Weight:</strong> <span id="weightDisplay"></span></div>
+        <div class="col-md-6"><strong>Origin:</strong> <span id="originDisplay"></span></div>
+        <div class="col-md-6"><strong>Destination:</strong> <span id="destinationDisplay"></span></div>
+        <div class="col-md-6"><strong>Pickup Date:</strong> <span id="pickupDateDisplay"></span></div>
+        <div class="col-md-6"><strong>ETA:</strong> <span id="etaDisplay"></span></div>
+        <div class="col-md-6"><strong>Estimated Delivery:</strong> <span id="estDateDisplay"></span></div>
+      </div>
+
+      <div class="mt-4">
+        <h4 class="fw-bold text-primary">Shipment Timeline</h4>
+        <ul id="timelineList" class="timeline mt-3"></ul>
+      </div>
+
+    </div>
+  </div>
+
+  <section class="container py-5" id="about">
+    <h2 class="fw-bold text-primary mb-3">About Nexus Logistics</h2>
+    <p>Nexus Logistics is a next-generation cargo and transportation network designed to simplify global delivery. With
+      AI-enhanced routing, automated ETA prediction, and smart warehouse integration, we ensure fast, safe, and
+      transparent shipping.</p>
+
+    <ul>
+      <li>Real-time tracking</li>
+      <li>Advanced cargo security</li>
+      <li>Optimized freight management</li>
+      <li>Eco-efficient delivery routes</li>
+      <li>Smart dashboards for partners</li>
+    </ul>
+  </section>
+
+  <section class="container py-5" id="contact">
+    <h2 class="fw-bold text-primary mb-3">Contact Us</h2>
+    <p>📍 Karunya Nagar</p>
+    <p>📞 +91 12345 67890</p>
+    <p>✉️ support@nexuslogistics.com</p>
+  </section>
+
+  <footer class="bg-primary text-white text-center py-3 mt-4">
+    © 2025 Nexus Logistics — All Rights Reserved
+  </footer>
+
+  <script>
+    const cities = ["Chennai", "Mumbai", "Delhi", "Bangalore", "Hyderabad", "Kolkata", "Pune", "Coimbatore"];
+    const serviceTypes = ["Express", "Standard", "Priority", "Saver"];
+    const weights = ["2.3 kg", "1.1 kg", "4.2 kg", "0.8 kg"];
+    const statuses = ["Processing", "In Transit", "Arrived at Facility", "Out for Delivery", "Delivered", "Shipment Delayed"];
+
+    function generateShipment(id) {
+      const origin = cities[Math.floor(Math.random() * cities.length)];
+      let dest;
+      do { dest = cities[Math.floor(Math.random() * cities.length)]; } while (dest === origin);
+
+      return {
+        id,
+        origin,
+        destination: dest,
+        eta: Math.floor(Math.random() * 180) + 60,
+        pickup: new Date(Date.now() - 86400000).toLocaleDateString(),
+        service: serviceTypes[Math.floor(Math.random() * serviceTypes.length)],
+        weight: weights[Math.floor(Math.random() * weights.length)],
+        status: statuses[Math.floor(Math.random() * statuses.length)]
+      };
+    }
+    function buildTimeline(status) {
+      const stages = [
+        "Processing",
+        "In Transit",
+        "Arrived at Facility",
+        "Out for Delivery",
+        "Delivered"
+      ];
+
+      const currentIndex = stages.indexOf(status);
+      const list = document.getElementById("timelineList");
+      list.innerHTML = "";
+
+      stages.forEach((stage, index) => {
+        const li = document.createElement("li");
+        li.textContent = stage;
+        if (index <= currentIndex) li.classList.add("completed");
+        list.appendChild(li);
+      });
+
+      if (status === "Shipment Delayed") {
+        const li = document.createElement("li");
+        li.textContent = "Shipment Delayed";
+        li.classList.add("text-danger", "fw-bold");
+        list.appendChild(li);
+      }
+    }
+    function trackShipment() {
+      const id = document.getElementById("trackingId").value.trim();
+      const err = document.getElementById("errorMsg");
+
+      if (!id.match(/^[A-Z0-9]{6,}$/)) {
+        err.textContent = "Enter valid tracking ID (min 6 characters).";
+        return;
+      }
+      err.textContent = "";
+
+      const s = generateShipment(id);
+
+      document.getElementById("trackIdDisplay").textContent = s.id;
+      document.getElementById("originDisplay").textContent = s.origin;
+      document.getElementById("destinationDisplay").textContent = s.destination;
+      document.getElementById("etaDisplay").textContent = s.eta + " mins";
+      document.getElementById("pickupDateDisplay").textContent = s.pickup;
+      document.getElementById("serviceTypeDisplay").textContent = s.service;
+      document.getElementById("weightDisplay").textContent = s.weight;
+      document.getElementById("estDateDisplay").textContent = new Date(Date.now() + s.eta * 60000).toLocaleString();
+      document.getElementById("statusBadge").textContent = s.status;
+
+      const badge = document.getElementById("statusBadge");
+      badge.className = "badge";
+
+      if (s.status === "Delivered") badge.classList.add("bg-success");
+      else if (s.status === "Shipment Delayed") badge.classList.add("bg-danger");
+      else if (s.status === "Out for Delivery") badge.classList.add("bg-warning", "text-dark");
+      else badge.classList.add("bg-primary");
+
+      buildTimeline(s.status);
+
+      document.getElementById("trackingDetails").classList.remove("d-none");
+      document.getElementById("trackingDetails").scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
